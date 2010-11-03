@@ -1,0 +1,2 @@
+This python script is to be loaded inside of blender.
+It accepts '.gro' files which can be generated with the Audacity editor.
