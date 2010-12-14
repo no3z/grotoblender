@@ -16,11 +16,17 @@ midistuffers = []
 numtracks = []
 
 
+
 for line in igot:
+    	if "tempor" in line:
+                tempo = line.lstrip("T0.0000 -tempor:")[:]
+                print "tempo: " + tempo
+                globals.TEMPO = float(tempo)
 	if "track" in line:
-		track = line.lstrip("#track ")[:2]
+		print line
+                track = line.lstrip("#track ")[:2]
 		track.strip()
-		numtracks.append(track)
+		numtracks.append({int(track):str(line.lstrip("#track ")[2:])})
 	if "T" in line:
 		tokens = line.split()
 		for tok in tokens:
@@ -78,10 +84,12 @@ pitch = 0
 channel = 0
 d = []
 
+
 count = 0
 for track in midistuffers:
 	midinote = myMidiNote()		
-	name = str(track[1]),'-',track[0],track[5],track[3],track[4]
+
+        name = str(track[1]),'-',track[0],track[5],track[3],track[4]
 	midinote.create(name, 0,0,0, float(track[0]),int(track[1]),float(track[2]),int(track[3]),float(track[4]),float(track[5]))
 	d.append(midinote)
 	count += 1
@@ -91,7 +99,7 @@ for track in midistuffers:
 
 d.sort(key = lambda myMidiNote:myMidiNote.start)
 globals.NOTESGRO = d
-
+globals.NUMBERTRACKS = numtracks
 
 class notesGRO():
 	def __init__(self,path):

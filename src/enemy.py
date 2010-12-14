@@ -29,21 +29,7 @@ from direct.particles.Particles import Particles
 from direct.particles.ParticleEffect import ParticleEffect 
 
 
-colors = [  VBase4(0   , 0.0, 1.0, 1.0),
-            VBase4(0.0 , 1.0, 1.0, 1.0),
-            VBase4(1   , 0.0, 1.0, 1.0),
-            VBase4(1   , 0.0, 0.33, 1.0),
-            VBase4(1   , 0.330, 0.0, 1.0),
-            VBase4(1   , 0.0, 0.0, 1.0),
-            VBase4(0.33   , 0.033, 0.0, 1.0),
-            VBase4(0.2   , 0.90, 0.20, 1.0),
-            VBase4(0.33   , 0.053, 0.60, 1.0),
-            VBase4(1   , 0.330, 0.70, 1.0),
-            VBase4(0.1   , 0.30, .70, 1.0),
-            VBase4(0.37   , 0.013, 1.0, 1.0),
-            VBase4(0.55   , 0.20, 0.20, 1.0),
-            VBase4(0.17   , 0.53, 0.60, 1.0)
-            ]
+
 
 #User imports
 import globals #@UnusedImport
@@ -204,6 +190,7 @@ class Enemy:
         self.cNode.addSolid(CollisionSphere(0, 0, 0, 35))
         self.cNodePath = self.actor.attachNewNode(self.cNode)
         #Show collision solid
+        #self.cNodePath.show()
         self.startPos = Point3(2000, float(self.channel)*100, 50 + float(self.pitch)/127*2.27 )
 
 
@@ -222,15 +209,15 @@ class Enemy:
 #        self.boxGeom.setBody(self.boxBody)
 #        globals.PhysicsBox.append( (self.actor, self.boxBody) )
 
-        self.duration += self.duration * (self.velocity)/32
+        self.duration += self.duration * (self.velocity)/21
 
-        self.actor.setColor(float(colors[self.channel].getX()),
-                            float(colors[self.channel].getY()),
-                            float(colors[self.channel].getZ()),
+        self.actor.setColor(float(globals.colors[self.channel].getX()),
+                            float(globals.colors[self.channel].getY()),
+                            float(globals.colors[self.channel].getZ()),
                             float(self.velocity/127))
         #Set starting position
         self.node.setPos(self.startPos)
-        self.endPos = Point3(float(self.pitch)*5, float(self.channel)*100, float(self.pitch)*1.25)
+        self.endPos = Point3(float(self.pitch), float(self.channel)*100, float(self.pitch)*1.25)
         #self.mySeq = Sequence()
         #We iterate thought the points, creating a lerpPosinterval and
         #appending each one to the sequence, with its respective duration
@@ -254,7 +241,7 @@ class Enemy:
 #            self.parallel.loop()
 #        else:
 #            self.parallel.start()
-
+        globals.PhysicsBox.addCollider( self.cNodePath, globals.PLAYER.frowneyC, base.drive.node())
         #Update task
         self.updateTask = taskMgr.add(self._update, 'Enemy-Update')
         #Since this is a task, we are done here
@@ -288,17 +275,9 @@ class Enemy:
 
         This will update the state of the enemy
         """
-        #print str(globalClock.getDt()),self.duration
-        self.duration = float(float(self.duration) - float(globalClock.getDt()))
-        #Check if the parallel is still playing
-        #print self.duration
         if not self.parallel.isPlaying():
-            #Either way we remove the node and delete ourselves
-            #globals.PhysicsBox.remove( (self.actor, self.boxBody) )
-            #print len(globals.PhysicsBox)
             self.node.removeNode()
             del self
-            print "dead"
             return task.done
 
         return task.cont

@@ -50,10 +50,10 @@ class Camera:
         self.min_dist = 150.0
         self.dist = 1070
         self.max_dist = 850.0
-        self.ang_cam_z = 45.5
+        self.ang_cam_z = 360.0
         self.offset_z = 0.0
-        self.ang_cam_x = 0.0
-        self.ang_cam_y = 274
+        self.ang_cam_x = 360.0
+        self.ang_cam_y = 360
 
     def cameraUpdate(self, task):  
         """Task function
@@ -64,8 +64,8 @@ class Camera:
             return task.cont
         #Calcular x, y y z
         x = (self.actor.getX(render) - self.dist)
-        y = (self.actor.getY(render) + sin(self.ang_cam_y * (pi / 180)) * 700)
-        z = (self.actor.getZ(render) + sin(self.ang_cam_z * (pi / 180)) * 700)
+        y = (self.actor.getY(render) + sin(self.ang_cam_y * (pi / 180)) * 1700)
+        z = (self.actor.getZ(render) + sin(self.ang_cam_z * (pi / 180)) * 1700)
         #Colocamos la pocision final de la camara
         camera.setX(x) 
         camera.setY(y) 

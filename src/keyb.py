@@ -28,7 +28,8 @@ class Keyboard(DirectObject):
     """
     def __init__(self):
         self.keyMap = {"left":0, "right":0, "forward":0,"backward":0, "cam-up":0, "cam-down":0, "cam-left":0, "cam-right":0}
-
+        self.v = 0
+        self.k = 0
         #Click sound and lock sound
         #self.clicksound = loader.loadSfx(globals.CLICKSOUND) 
         #self.locksound = loader.loadSfx(globals.LOCKSOUND)                
@@ -36,8 +37,8 @@ class Keyboard(DirectObject):
         self.accept("escape", sys.exit)
         self.accept("arrow_left", self.setKey, ["left",1])
         self.accept("arrow_right", self.setKey, ["right",1])
-        self.accept("arrow_up", self.setKey, ["forward",1])
-        self.accept("arrow_down", self.setKey, ["backward",1])
+        self.accept("arrow_up-up", self.waitKey, ["forward",1])
+        self.accept("arrow_down-up", self.waitKey, ["backward",1])
         self.accept("a", self.setKey, ["cam-left",1])
         self.accept("d", self.setKey, ["cam-right",1])
         self.accept("w", self.setKey, ["cam-up",1])
@@ -45,21 +46,26 @@ class Keyboard(DirectObject):
 
         self.accept("arrow_left-up", self.setKey, ["left",0])
         self.accept("arrow_right-up", self.setKey, ["right",0])
-        self.accept("arrow_up-up", self.setKey, ["forward",0])
-        self.accept("arrow_down-up", self.setKey, ["backward",0])
+        #self.accept("arrow_up-up", self.setKey, ["forward",0])
+        #self.accept("arrow_down-up", self.setKey, ["backward",0])
         self.accept("a-up", self.setKey, ["cam-left",0])
         self.accept("s-up", self.setKey, ["cam-down",0])
         self.accept("d-up", self.setKey, ["cam-right",0])
         self.accept("w-up", self.setKey, ["cam-up",0])
 
-        #The stack, just a simple array
-        self.stack = []        
-            #Update Task
 
     #Records the state of the arrow keys
     def setKey(self, key, value):
         self.keyMap[key] = value
-    
-    
-    
-            
+        
+    def waitKey(self, key, value):
+         if self.v == 0:
+            self.k = key
+            self.v = 1
+            self.keyMap[key] = value
+            taskMgr.doMethodLater(globals.TEMPO/360, self.setOff, "singleKeyInput")
+
+    def setOff(self, task):
+        self.keyMap[self.k] = 0
+        print self.v,self.k,self
+        self.v = 0

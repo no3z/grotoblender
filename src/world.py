@@ -31,6 +31,8 @@ from direct.gui.DirectGui import OnscreenText
 #Other Imports
 #To handle XML (SAX)
 from xml.sax import make_parser
+from direct.showbase.ShowBase import ShowBase
+from pandac.PandaModules import CollisionTraverser, CollisionHandlerPusher
 
 #User imports
 import camera
@@ -55,6 +57,7 @@ class World(DirectObject.DirectObject):
 #                                    style=1, fg=(1, 1, 1, 1),
 #                                    pos=(-1.25, -0.725), scale=.05, align=TextNode.ALeft)
 
+        ShowBase()
         #Set the framerate meter, uncomment this if you want to see fps
         base.setFrameRateMeter(True) 
         #Change Background Color to black
@@ -92,7 +95,8 @@ class World(DirectObject.DirectObject):
 #        self.ground.setCategoryBits(BitMask32(0x00000002))
         #Enable Particles
         base.enableParticles()
-        
+
+        #taskMgr.popupControls()
         #Recreate a simple Fog
         self.fog = Fog('distanceFog') 
         self.fog.setColor(0, 0, 0)
@@ -104,7 +108,7 @@ class World(DirectObject.DirectObject):
         base.camLens.setFar(7500) 
         #Initialize traverser
         base.cTrav = CollisionTraverser()         
-
+        globals.PhysicsBox = CollisionHandlerPusher()
         #Initializes the XML parser and loads level1       
         handler = xmlr.RezHandler(globals.LEVEL_1_DIR)
         parser = make_parser()
